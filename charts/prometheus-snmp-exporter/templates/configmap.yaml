@@ -1,6 +1,6 @@
 {{- if .Values.config }}
 apiVersion: v1
-kind: ConfigMap
+kind: {{ if .Values.secretConfig -}} Secret {{- else -}} ConfigMap {{- end }}
 metadata:
   name: {{ template "prometheus-snmp-exporter.fullname" . }}
   namespace: {{ .Release.Namespace }}
@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "prometheus-snmp-exporter.chart" . }}
-data:
+{{ if .Values.secretConfig -}} stringData: {{- else -}} data: {{- end }}
   snmp.yaml: |
 {{ .Values.config | indent 4 }}
 {{- end }}

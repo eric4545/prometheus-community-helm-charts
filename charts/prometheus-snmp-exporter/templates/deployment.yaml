@@ -91,6 +91,10 @@ spec:
               readOnly: true
       volumes:
         - name: config
+        {{- if .Values.secretConfig }}
+          secret:
+            secretName: {{ template "prometheus-snmp-exporter.fullname" . }}
+        {{- else }}
           configMap:
             name: {{ template "prometheus-snmp-exporter.fullname" . }}
         {{- end }}
